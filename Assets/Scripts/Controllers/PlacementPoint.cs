@@ -23,7 +23,12 @@ namespace Controllers
 
         public Vector3 GetCenter()
         {
-            return transform.position;
+            return transform.position + Vector3.up / 3;
+        }
+
+        public BuildingController GetBuilding()
+        {
+            return currentBuilding;
         }
 
         #endregion
