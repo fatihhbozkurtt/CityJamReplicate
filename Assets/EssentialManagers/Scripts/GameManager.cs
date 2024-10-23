@@ -27,7 +27,14 @@ public class GameManager : MonoSingleton<GameManager>
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
 
     }
-
+    void Update()
+    {
+        // float scroll = Input.GetAxis("Mouse ScrollWheel");
+        // if (scroll != 0)
+        // {
+        //     Debug.Log("Scroll Wheel Value: " + scroll);
+        // }
+    }
     public void StartGame()
     {
         isLevelActive = true;

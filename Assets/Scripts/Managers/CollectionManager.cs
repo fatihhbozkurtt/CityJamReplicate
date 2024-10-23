@@ -36,6 +36,8 @@ namespace Managers
             if (matchedList.Count < 3)
             {
                 Debug.LogWarning("No enough buildings has matched");
+                if (GetAvailablePoint() == null)
+                    GameManager.instance.EndGame(false);
                 return;
             }
 
@@ -54,7 +56,7 @@ namespace Managers
             {
                 PlacementPoint targetPoint = points[i];
                 BuildingController building = buildings[i];
-                if (targetPoint == building.GetPoint()) return;
+                //   if (targetPoint == building.GetPoint()) return;
 
                 building.GetPoint().SetFree();
                 building.RepositionSelf(targetPoint: targetPoint);
