@@ -70,7 +70,7 @@ Camera:
   far clip plane: 5000
   field of view: 20
   orthographic: 0
-  orthographic size: 10
+  orthographic size: 31.1
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -626,11 +626,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zoomSpeed: 7.5
-  minDistance: 55
+  minDistance: 85
   maxDistance: 250
   camHolderTransform: {fileID: 3734553226948056652}
   zoomThreshold: 0.1
   dragSpeed: 0.04
+  dragThreshold: 10
   incrementSpeedButton: {fileID: 0}
   decrementSpeedButton: {fileID: 0}
   speedTxt: {fileID: 0}

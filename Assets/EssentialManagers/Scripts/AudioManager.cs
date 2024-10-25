@@ -25,6 +25,8 @@ namespace EssentialManagers.Scripts
                 s.source.spatialBlend = 0f;
                 s.source.playOnAwake = false;
             }
+
+            Play(SoundTag.BG_Music);
         }
 
         // Play a sound by its name

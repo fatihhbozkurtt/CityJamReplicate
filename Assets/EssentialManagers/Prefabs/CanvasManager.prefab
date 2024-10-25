@@ -1973,7 +1973,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &26456653788951855
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2108,7 +2108,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8419790393691943483
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2546,7 +2546,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6736287180007912867
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3237,16 +3237,6 @@ MonoBehaviour:
   failCanvasGroup: {fileID: 5694269652366938105}
   screenFader: {fileID: 4233480182639010105}
   levelText: {fileID: 3236823821466275104}
-  _goalData:
-  - buildingType: 0
-    icon: {fileID: 21300000, guid: 3f327c2e09b382b49b48c10f97ebeefd, type: 3}
-    targetCount: 3
-  - buildingType: 3
-    icon: {fileID: 21300000, guid: eadfa6e5290bf2749a85dd2387310e99, type: 3}
-    targetCount: 4
-  - buildingType: 4
-    icon: {fileID: 21300000, guid: eadfa6e5290bf2749a85dd2387310e99, type: 3}
-    targetCount: 17
   dataLists:
   - goalDataList:
     - buildingType: 0

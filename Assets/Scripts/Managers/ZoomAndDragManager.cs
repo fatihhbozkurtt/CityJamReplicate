@@ -15,6 +15,8 @@ namespace Managers
         [Header("Drag")] public float dragSpeed;
         private Vector3 _lastTouchPosition;
         private bool _isDragging;
+        [SerializeField] private float dragThreshold;
+        private Vector3 _initialTouchPosition;
 
         [Header("Test")] public Button incrementSpeedButton;
         public Button decrementSpeedButton;
@@ -46,14 +48,14 @@ namespace Managers
             //
             // minDistancePlus.onClick.AddListener((() =>
             // {
-            //     zoomThreshold += 0.01f;
-            //     zoomThresholdTxt.text = zoomThreshold.ToString();
+            //     dragThreshold += 1f;
+            //     zoomThresholdTxt.text = dragThreshold.ToString();
             // }));
             //
             // minDistanceMinus.onClick.AddListener((() =>
             // {
-            //     zoomThreshold -= 0.01f;
-            //     zoomThresholdTxt.text = zoomThreshold.ToString();
+            //     dragThreshold -= 1f;
+            //     zoomThresholdTxt.text = dragThreshold.ToString();
             // }));
 
             #endregion
@@ -98,6 +100,7 @@ namespace Managers
 
                 ZoomCamera(deltaMagnitudeDiff, zoomSpeed);
             }
+
             else if (Input.touchCount == 1) // One-finger drag logic
             {
                 Touch touch = Input.GetTouch(0);
@@ -108,7 +111,11 @@ namespace Managers
                 }
                 else if (touch.phase == TouchPhase.Moved)
                 {
-                    DragCamera(touch.position);
+                    // Only start dragging if movement exceeds the threshold
+                    if (_isDragging || Vector2.Distance(touch.position, _initialTouchPosition) >= dragThreshold)
+                    {
+                        DragCamera(touch.position);
+                    }
                 }
                 else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
                 {
@@ -118,37 +125,43 @@ namespace Managers
 #endif
         }
 
-        void ZoomCamera(float deltaMagnitudeDiff, float speed)
+        private void ZoomCamera(float deltaMagnitudeDiff, float speed)
         {
             if (Mathf.Abs(deltaMagnitudeDiff) <= zoomThreshold) return;
 
+            // Calculate the movement vector based on zoom input and speed
             Vector3 movement = camHolderTransform.forward * (deltaMagnitudeDiff * speed);
+            Vector3 proposedPosition = camHolderTransform.position + movement;
 
-            Vector3 targetPosition = camHolderTransform.position + movement;
+            // Check the current distance and ensure we don't go below minDistance
+            float currentDistance = Vector3.Distance(camHolderTransform.position, Vector3.zero);
 
-            float distance = Vector3.Distance(targetPosition, Vector3.zero); // Adjust target as needed
-
-            if (distance > minDistance && distance < maxDistance)
+            // Only allow movement if it's within the bounds
+            if ((currentDistance > minDistance || deltaMagnitudeDiff < 0) &&
+                (currentDistance < maxDistance || deltaMagnitudeDiff > 0))
             {
                 camHolderTransform.position =
-                    Vector3.Lerp(camHolderTransform.position, targetPosition, Time.deltaTime * speed);
+                    Vector3.Lerp(camHolderTransform.position, proposedPosition, Time.deltaTime * speed);
             }
         }
 
+
         private void StartDragging(Vector3 touchPosition)
         {
+            _initialTouchPosition = touchPosition;  // Store the initial touch position
             _lastTouchPosition = touchPosition;
-            _isDragging = true;
+            _isDragging = false;  // Wait until movement exceeds the threshold
         }
 
         private void DragCamera(Vector3 touchPosition)
         {
-            if (!_isDragging) return;
+            if (!_isDragging)
+            {
+                _isDragging = true; // Start dragging after passing the threshold
+            }
 
             Vector3 touchDelta = (touchPosition - _lastTouchPosition) * dragSpeed;
-
-            camHolderTransform.Translate(-touchDelta.x, -touchDelta.y, 0); // Moving along X and Y axes (pan)
-
+            camHolderTransform.Translate(-touchDelta.x, -touchDelta.y, 0);
             _lastTouchPosition = touchPosition;
         }
 

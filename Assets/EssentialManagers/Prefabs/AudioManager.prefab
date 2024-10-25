@@ -69,3 +69,9 @@ MonoBehaviour:
     pitch: 1
     loop: 0
     source: {fileID: 0}
+  - tag: 4
+    clip: {fileID: 8300000, guid: 3ee6930b9bd2a7c4ca5aada25bdbaf85, type: 3}
+    volume: 0.075
+    pitch: 1
+    loop: 1
+    source: {fileID: 0}

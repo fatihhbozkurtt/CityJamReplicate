@@ -1876,11 +1876,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6579423199717935195, guid: 63ae4a3015e1e97429fb42d3f7f628be, type: 3}
       propertyPath: field of view
-      value: 15
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 6579423199717935195, guid: 63ae4a3015e1e97429fb42d3f7f628be, type: 3}
       propertyPath: orthographic size
-      value: 34
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
