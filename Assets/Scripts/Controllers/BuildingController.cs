@@ -9,6 +9,10 @@ namespace Controllers
     public class BuildingController : MonoBehaviour
     {
         [Header("Config")] [SerializeField] private BuildingType type;
+
+        [Header("References")] [SerializeField]
+        private ParticleSystem explosionParticle;
+
         [Header("Debug")] public bool isSelected;
         [SerializeField] private PlacementPoint currentPoint;
 
@@ -28,7 +32,7 @@ namespace Controllers
 
             AudioManager.instance.Play(SoundTag.Building_Picked);
             CanvasManager.instance.TriggerBuildingAPickedEvent(type);
-            
+
             SetPoint(point, true);
         }
 
@@ -67,8 +71,7 @@ namespace Controllers
                 CollectionManager.instance.OnNewBuildingArrived(this);
             });
         }
-
-
+        
         public void Merge(BuildingController centerB, PlacementPoint centerPoint)
         {
             currentPoint.SetFree();
@@ -86,6 +89,7 @@ namespace Controllers
             {
                 Debug.Log("Center building plays the audio!");
                 AudioManager.instance.Play(SoundTag.Building_Merged, jumpDuration / 1.5f);
+                Instantiate(explosionParticle, transform.position + Vector3.up * 2, Quaternion.identity);
             }
 
             sq.Append(transform.DOScale(Vector3.zero, 0.25f));

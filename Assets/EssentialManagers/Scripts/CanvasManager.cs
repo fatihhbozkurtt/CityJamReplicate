@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Controllers;
 using Data;
 using DG.Tweening;
+using MoreMountains.NiceVibrations;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -35,7 +36,7 @@ namespace EssentialManagers.Scripts
 
         [Header("References")] [SerializeField]
         private List<GoalDisplayController> goalDisplayControllers;
-
+        private int _dataIndex;
         private int _targetCount;
 
 
@@ -106,11 +107,13 @@ namespace EssentialManagers.Scripts
         public void OnTapRestart()
         {
             FadeOutScreen(GameManager.instance.RestartStage, 1);
+            HapticManager.instance.TriggerHaptic(HapticTypes.HeavyImpact);
         }
 
         public void OnTapContinue()
         {
             FadeOutScreen(GameManager.instance.NextStage, 1);
+            HapticManager.instance.TriggerHaptic(HapticTypes.HeavyImpact);
         }
 
         #endregion
@@ -152,19 +155,17 @@ namespace EssentialManagers.Scripts
         #endregion
 
         #region Level Goal Assign
-
-        private int dataIndex;
-
+        
         private void SetGoal()
         {
-            dataIndex = SceneManager.GetActiveScene().buildIndex;
+            _dataIndex = SceneManager.GetActiveScene().buildIndex;
 
-            Debug.Log("Goal index: " + dataIndex);
+            Debug.Log("Goal index: " + _dataIndex);
             for (int i = 0; i < dataLists.Count; i++)
             {
-                for (int p = 0; p < dataLists[dataIndex].goalDataList.Count; p++)
+                for (int p = 0; p < dataLists[_dataIndex].goalDataList.Count; p++)
                 {
-                    goalDisplayControllers[p].SetGoal(dataLists[dataIndex].goalDataList[p]);
+                    goalDisplayControllers[p].SetGoal(dataLists[_dataIndex].goalDataList[p]);
                 }
             }
         }
@@ -172,19 +173,20 @@ namespace EssentialManagers.Scripts
         public void TriggerBuildingArrivedEvent(BuildingType type)
         {
             BuildingArrivedEvent?.Invoke(type);
+            HapticManager.instance.TriggerHaptic(HapticTypes.MediumImpact);
         }
 
         public void TriggerBuildingAPickedEvent(BuildingType type)
         {
             BuildingPickedEvent?.Invoke(type);
+            HapticManager.instance.TriggerHaptic(HapticTypes.MediumImpact);
         }
-
 
         public void CheckIfGoalsMet()
         {
             bool gameIsEnded = true;
 
-            for (int p = 0; p < dataLists[dataIndex].goalDataList.Count; p++)
+            for (int p = 0; p < dataLists[_dataIndex].goalDataList.Count; p++)
             {
                 if (!goalDisplayControllers[p].goalCompleted)
                 {

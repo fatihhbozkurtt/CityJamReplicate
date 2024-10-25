@@ -100,6 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 4
+  explosionParticle: {fileID: 19806788, guid: c2f28a236b0696a4f90a994422019577, type: 3}
   isSelected: 0
   currentPoint: {fileID: 0}
 --- !u!1001 &247424341741201663
