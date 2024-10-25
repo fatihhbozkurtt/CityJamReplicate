@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using Data;
 using DG.Tweening;
+using EssentialManagers.Scripts;
 using Managers;
 using UnityEngine;
 
@@ -26,6 +26,9 @@ namespace Controllers
                 return;
             }
 
+            AudioManager.instance.Play(SoundTag.Building_Picked);
+            CanvasManager.instance.TriggerBuildingAPickedEvent(type);
+            
             SetPoint(point, true);
         }
 
@@ -33,6 +36,7 @@ namespace Controllers
         {
             if (currentPoint != null) currentPoint.SetFree();
             currentPoint = newPoint;
+            transform.SetParent(currentPoint.transform);
             currentPoint.SetOccupied(this);
 
 
@@ -44,35 +48,55 @@ namespace Controllers
         private void MoveToPoint(PlacementPoint targetPoint)
         {
             Sequence sq = DOTween.Sequence();
-            sq.Append(transform.DOJump(targetPoint.GetCenter(), 10, 1, .25f));
+
+            sq.Append(transform.DOLocalMoveY(transform.localPosition.y + 5, 0.1f)
+                .OnComplete(() => transform.SetParent(currentPoint.transform)));
+
+            sq.Join(transform.DOBlendableRotateBy(Vector3.up * 360f, 0.25f, RotateMode.FastBeyond360));
+
+            sq.Append(transform.DOLocalJump(targetPoint.GetCenterOffset(),
+                1, 1, .35f));
+
             sq.Join(transform.DOScale(Vector3.one / 7f, 0.25f));
+
             sq.OnComplete(() =>
             {
-                transform.SetParent(currentPoint.transform);
                 currentPoint.AnimateUpDown();
-                CollectionManager.instance.OnNewBuildingPicked(this);
+                AudioManager.instance.Play(SoundTag.Building_Arrived);
+                CanvasManager.instance.TriggerBuildingArrivedEvent(type);
+                CollectionManager.instance.OnNewBuildingArrived(this);
             });
         }
 
-        public void Merge(BuildingController centerB)
+
+        public void Merge(BuildingController centerB, PlacementPoint centerPoint)
         {
             currentPoint.SetFree();
+
+            float jumpDuration = 0.25f;
             Sequence sq = DOTween.Sequence();
-            sq.Append(transform.DOMoveY(transform.position.y + 5, 0.25f));
+            sq.Append(transform.DOLocalMoveY(transform.localPosition.y + 5, 0.25f));
             if (centerB != this)
             {
-                sq.Append(transform.DOJump(centerB.transform.position + Vector3.up * 3,
-                    5, 1, .25f));
+                transform.SetParent(centerPoint.transform);
+                sq.Append(transform.DOLocalJump(Vector3.up * 3,
+                    5, 1, jumpDuration));
+            }
+            else
+            {
+                Debug.Log("Center building plays the audio!");
+                AudioManager.instance.Play(SoundTag.Building_Merged, jumpDuration / 1.5f);
             }
 
             sq.Append(transform.DOScale(Vector3.zero, 0.25f));
-            sq.OnComplete((() => { Destroy(gameObject); }));
+            sq.OnComplete(() => { Destroy(gameObject); });
         }
 
         public void RepositionSelf(PlacementPoint targetPoint)
         {
+            //  transform.SetParent(targetPoint.transform);
             SetPoint(targetPoint, false);
-            transform.DOJump(targetPoint.GetCenter(),
+            transform.DOLocalJump(Vector3.zero + targetPoint.GetCenterOffset(),
                 5, 1, .25f);
         }
 

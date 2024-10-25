@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,15 +7,15 @@ namespace Managers
 {
     public class ZoomAndDragManager : MonoBehaviour
     {
-        [Header("Zoom")] public float zoomSpeed; // Speed of zooming
-        public float minDistance; // Minimum distance the camera can move forward
-        public float maxDistance; // Maximum distance the camera can move backward
-        public Transform camHolderTransform; // The transform of the actual game camera
+        [Header("Zoom")] public float zoomSpeed;
+        public float minDistance;
+        public float maxDistance;
+        public Transform camHolderTransform;
         public float zoomThreshold;
 
-        [Header("Drag")] public float dragSpeed; // Speed for dragging the camera
-        private Vector3 lastTouchPosition; // To store the last touch position for dragging
-        private bool isDragging; // Flag to track if dragging is happening
+        [Header("Drag")] public float dragSpeed;
+        private Vector3 _lastTouchPosition;
+        private bool _isDragging;
 
         [Header("Test")] public Button incrementSpeedButton;
         public Button decrementSpeedButton;
@@ -28,6 +29,7 @@ namespace Managers
 #if UNITY_EDITOR
             zoomSpeed = 20f;
 #endif
+
             #region MOBILE TEST
 
             // speedTxt.text = zoomSpeed.ToString();
@@ -58,8 +60,10 @@ namespace Managers
             #endregion
         }
 
-        void Update()
+        private void Update()
         {
+            if (!GameManager.instance.isLevelActive) return;
+
 #if UNITY_EDITOR
             float scrollData = Input.GetAxis("Mouse ScrollWheel");
             ZoomCamera(scrollData * 10, zoomSpeed); // Apply zoom based on scroll input
@@ -119,49 +123,39 @@ namespace Managers
         {
             if (Mathf.Abs(deltaMagnitudeDiff) <= zoomThreshold) return;
 
-            // Move the camera along the parent’s forward axis (which accounts for its rotation)
             Vector3 movement = camHolderTransform.forward * (deltaMagnitudeDiff * speed);
 
-            // Calculate the target position by adding the movement to the current position
             Vector3 targetPosition = camHolderTransform.position + movement;
 
-            // Calculate the distance from the camera to the target (assuming target is at (0, 0, 0))
             float distance = Vector3.Distance(targetPosition, Vector3.zero); // Adjust target as needed
 
-            // Clamp the distance to stay within the min and max distance limits
             if (distance > minDistance && distance < maxDistance)
             {
-                // Smoothly interpolate between the current position and the target position
                 camHolderTransform.position =
                     Vector3.Lerp(camHolderTransform.position, targetPosition, Time.deltaTime * speed);
             }
         }
 
-        void StartDragging(Vector3 touchPosition)
+        private void StartDragging(Vector3 touchPosition)
         {
-            // Record the initial touch position for dragging
-            lastTouchPosition = touchPosition;
-            isDragging = true;
+            _lastTouchPosition = touchPosition;
+            _isDragging = true;
         }
 
-        void DragCamera(Vector3 touchPosition)
+        private void DragCamera(Vector3 touchPosition)
         {
-            if (!isDragging) return;
+            if (!_isDragging) return;
 
-            // Calculate the touch delta movement
-            Vector3 touchDelta = (touchPosition - lastTouchPosition) * dragSpeed;
+            Vector3 touchDelta = (touchPosition - _lastTouchPosition) * dragSpeed;
 
-            // Move the camera holder based on the touch delta
             camHolderTransform.Translate(-touchDelta.x, -touchDelta.y, 0); // Moving along X and Y axes (pan)
 
-            // Update the last touch position
-            lastTouchPosition = touchPosition;
+            _lastTouchPosition = touchPosition;
         }
 
-        void EndDragging()
+        private void EndDragging()
         {
-            // Stop dragging
-            isDragging = false;
+            _isDragging = false;
         }
     }
 }

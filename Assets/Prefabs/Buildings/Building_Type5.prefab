@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d46aa1f7888b6604ebf65353b6f41a42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 1
+  type: 4
   isSelected: 0
   currentPoint: {fileID: 0}
 --- !u!1001 &247424341741201663

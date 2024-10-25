@@ -1,18 +1,20 @@
 using System;
+using System.Collections;
+using Data;
 using UnityEngine;
 
 namespace EssentialManagers.Scripts
 {
-    public class AudioManager : MonoBehaviour
+    public class AudioManager : MonoSingleton<AudioManager>
     {
-        public static AudioManager instance; // Singleton instance
+        public SoundData[] sounds; // Array to hold all sound clips
 
-        public Sound[] sounds; // Array to hold all sound clips
-
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             // Initialize all sounds
-            foreach (Sound s in sounds)
+            foreach (SoundData s in sounds)
             {
                 s.source = gameObject.AddComponent<AudioSource>(); // Add AudioSource for each sound
                 s.source.clip = s.clip;
@@ -20,29 +22,38 @@ namespace EssentialManagers.Scripts
                 s.source.volume = s.volume;
                 s.source.pitch = s.pitch;
                 s.source.loop = s.loop;
+                s.source.spatialBlend = 0f;
+                s.source.playOnAwake = false;
             }
         }
 
         // Play a sound by its name
-        public void Play(string soundName)
+        public void Play(SoundTag soundTag, float delay = 0)
         {
-            Sound s = Array.Find(sounds, sound => sound.name == soundName);
+            SoundData s = Array.Find(sounds, sound => sound.tag == soundTag);
             if (s == null)
             {
-                Debug.LogWarning("Sound: " + soundName + " not found!");
+                Debug.LogWarning("Sound: " + soundTag + " not found!");
                 return;
             }
 
-            s.source.Play();
+            IEnumerator PlayRoutine()
+            {
+                yield return new WaitForSeconds(delay);
+
+                s.source.Play();
+            }
+
+            StartCoroutine(PlayRoutine());
         }
 
         // Stop a sound by its name
-        public void Stop(string soundName)
+        public void Stop(SoundTag soundTag)
         {
-            Sound s = Array.Find(sounds, sound => sound.name == soundName);
+            SoundData s = Array.Find(sounds, sound => sound.tag == soundTag);
             if (s == null)
             {
-                Debug.LogWarning("Sound: " + soundName + " not found!");
+                Debug.LogWarning("Sound: " + soundTag + " not found!");
                 return;
             }
 
@@ -50,12 +61,12 @@ namespace EssentialManagers.Scripts
         }
 
         // Adjust the volume for a specific sound
-        public void SetVolume(string soundName, float volume)
+        public void SetVolume(SoundTag soundTag, float volume)
         {
-            Sound s = Array.Find(sounds, sound => sound.name == soundName);
+            SoundData s = Array.Find(sounds, sound => sound.tag == soundTag);
             if (s == null)
             {
-                Debug.LogWarning("Sound: " + soundName + " not found!");
+                Debug.LogWarning("Sound: " + soundTag + " not found!");
                 return;
             }
 
@@ -65,9 +76,9 @@ namespace EssentialManagers.Scripts
 }
 
 [Serializable]
-public class Sound
+public class SoundData
 {
-    public string name; // Name of the sound
+    public SoundTag tag; // Tag of the sound
 
     public AudioClip clip; // Audio clip for the sound
 

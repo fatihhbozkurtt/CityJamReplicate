@@ -626,8 +626,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zoomSpeed: 7.5
-  minDistance: 50
-  maxDistance: 200
+  minDistance: 55
+  maxDistance: 250
   camHolderTransform: {fileID: 3734553226948056652}
   zoomThreshold: 0.1
   dragSpeed: 0.04

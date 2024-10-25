@@ -22,9 +22,9 @@ namespace Controllers
             isOccupied = false;
         }
 
-        public Vector3 GetCenter()
+        public Vector3 GetCenterOffset()
         {
-            return transform.position + Vector3.up / 2;
+            return Vector3.up / 2;
         }
 
         public BuildingController GetBuilding()
@@ -35,15 +35,16 @@ namespace Controllers
         public void AnimateUpDown()
         {
             // Store the initial Y position
-            float startY = transform.position.y;
-            float moveDistance = 0.5f; // How much to move up
-            float duration = 0.25f;       // Time to move up or down
+            float startY = transform.localPosition.y;
+            float moveDistance = 1f; // How much to move up
+            float duration = 0.25f; // Time to move up or down
 
             // Move up first, then move down back to the start position
-            transform.DOMoveY(startY + moveDistance, duration / 2)
-                .OnComplete(() => {
+            transform.DOLocalMoveY(startY + moveDistance, duration / 2)
+                .OnComplete(() =>
+                {
                     // After moving up, move back down to the start position
-                    transform.DOMoveY(startY, duration / 2);
+                    transform.DOLocalMoveY(startY, duration / 2);
                 })
                 .SetEase(Ease.InOutSine); // Smooth ease for natural movement
         }

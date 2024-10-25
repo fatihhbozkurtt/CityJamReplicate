@@ -7,8 +7,6 @@ namespace Managers
 {
     public class CollectionManager : MonoSingleton<CollectionManager>
     {
-        public event System.Action<BuildingController> NewBuildingPickedEvent;
-
         [Header("References")] [SerializeField]
         private List<PlacementPoint> points;
 
@@ -28,10 +26,8 @@ namespace Managers
             return point;
         }
 
-        public void OnNewBuildingPicked(BuildingController newB)
+        public void OnNewBuildingArrived(BuildingController newB)
         {
-            NewBuildingPickedEvent?.Invoke(newB);
-
             List<BuildingController> matchedList = GetBuildingsByType(newB);
             if (matchedList.Count < 3)
             {
@@ -43,7 +39,8 @@ namespace Managers
 
             for (int i = 0; i < 3; i++)
             {
-                matchedList[i].Merge(centerB: matchedList[1]);
+                matchedList[i].Merge(centerB: matchedList[1],
+                    matchedList[1].GetPoint());
             }
 
             RearrangeBuildingsPos();
