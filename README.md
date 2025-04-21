@@ -1,6 +1,6 @@
 # 🚦 CityJamReplicate
 
-A hobby project inspired by [**City Jam** by Garawell**](https://play.google.com/store/apps/details?id=com.Garawell.CityJam&hl=tr) 🏙️🚗  
+A hobby project inspired by [**City Jam**](https://play.google.com/store/apps/details?id=com.Garawell.CityJam&hl=tr) 🏙️🚗  
 This project was created for learning purposes and to showcase Unity development skills in a portfolio.
 
 ---
